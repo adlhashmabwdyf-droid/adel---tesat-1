@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الاختبار الشامل في علم الصرف - الإبدال والإعلال</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white py-6 shadow-md">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-2xl md:text-3xl font-bold">الاختبار الإلكتروني الشامل: أحكام الإبدال والإعلال في الصرف</h1>
+            <p class="mt-2 text-indigo-100 text-sm md:text-base">يحتوي هذا الاختبار على أسئلة الاختيار من متعدد وأكمل الفراغ لتغطية جميع محتوى المقرر بدقة.</p>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto px-4 py-8 max-w-3xl flex-grow">
+        
+        <!-- Welcome / Start Screen -->
+        <div id="start-screen" class="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div class="mb-6 text-indigo-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            </div>
+            <h2 class="text-xl font-bold text-slate-700 mb-4">جاهز لاختبار معلوماتك الصرفية كاملة؟</h2>
+            <p class="text-slate-600 mb-6">يضم الاختبار أسئلة الاختيار من متعدد وأسئلة إكمال الفراغات. تظهر الدرجة والتعليل فور الانتهاء، ويمكن إعادة المحاولة في أي وقت.</p>
+            <button onclick="startQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition transform active:scale-95">
+                بدء الاختبار الشامل
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white rounded-2xl shadow-lg p-6 md:p-8">
+            <!-- Progress Bar & Timer info -->
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <span id="question-counter" class="text-sm font-semibold text-indigo-600">السؤال 1 من 50</span>
+                <span id="score-tracker" class="text-sm font-semibold text-slate-500">الدرجة: 0</span>
+            </div>
+
+            <!-- Question Box -->
+            <div class="mb-6">
+                <h3 id="question-text" class="text-lg md:text-xl font-bold text-slate-800 leading-relaxed mb-4"></h3>
+            </div>
+
+            <!-- Options Container (For Multiple Choice) -->
+            <div id="options-container" class="space-y-3 mb-6">
+                <!-- Dynamically injected options -->
+            </div>
+
+            <!-- Fill in the blank Container (For Completion Questions) -->
+            <div id="fill-container" class="hidden space-y-4 mb-6">
+                <p class="text-sm text-slate-500 font-semibold">اكتب الإجابة المناسبة في الفراغ أدناه:</p>
+                <input type="text" id="fill-input" class="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="اكتب الإجابة هنا...">
+                <button onclick="submitFillAnswer()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-6 rounded-xl transition">تثبيت الإجابة</button>
+            </div>
+
+            <!-- Rationale / Feedback Box -->
+            <div id="feedback-box" class="hidden mb-6 p-4 rounded-xl border text-sm">
+                <!-- Feedback text here -->
+            </div>
+
+            <!-- Navigation Button -->
+            <div class="flex justify-end">
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition">
+                    السؤال التالي
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="result-screen" class="hidden bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div class="mb-6 text-emerald-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">أنهيت الاختبار الشامل بنجاح!</h2>
+            <p id="final-score-text" class="text-lg text-slate-600 mb-6">درجتك النهائية هي: 0 من 50</p>
+            <div class="flex justify-center gap-4">
+                <button onclick="restartQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition">
+                    إعادة الاختبار
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t py-4 text-center text-slate-500 text-sm">
+        <p>نظام الاختبارات الإلكترونية التفاعلية - علم الصرف</p>
+    </footer>
+
+    <script>
+        const quizData = [
+            // القسم الأول: أسئلة الاختيار من متعدد (1 إلى 25)
+            {
+                type: "mcq",
+                question: "1. الكلمة التي أُبدلت فيها الياء واواً لوقوعها لَاماً لـ (فَعْلَى) اسماً هي:",
+                options: [
+                    { text: "فَتْوَى", isCorrect: true, rationale: "صحيح، لأنها وقعت لَاماً لوزن (فَعْلَى) اسماً فقلبت واواً." },
+                    { text: "طُوبَى", isCorrect: false, rationale: "خطأ، طوبى وقعت عيناً لـ (فُعْلَى) اسماً." },
+                    { text: "مُوقِن", isCorrect: false, rationale: "خطأ، موقن وقعت الياء فيه ساكنة مفردة بعد ضمة في غير الجمع." },
+                    { text: "دُنْيَا", isCorrect: false, rationale: "خطأ، دنيا وقعت عيناً لـ (فُعْلَى) اسماً." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "2. الأصل الصرفي لكلمة (فَتْوَى) قبل إبدال الياء واواً هو:",
+                options: [
+                    { text: "فتيا", isCorrect: true, rationale: "صحيح، أصلها (فتيا) فوقعت الياء لاماً لفعلَى اسماً فأبدلت واواً لتصير فتوى." },
+                    { text: "فتوو", isCorrect: false, rationale: "خطأ." },
+                    { text: "فتوى", isCorrect: false, rationale: "هذا هو اللفظ بعد الإبدال وليس الأصل." },
+                    { text: "فتيو", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "3. تُقْلَب الياء واواً إذا وقعت عيناً لـ (فُعْلَى) اسماً، ومثاله الصرفي:",
+                options: [
+                    { text: "طُوبَى", isCorrect: true, rationale: "صحيح، طوبى ودنيا وعليا وقصوى وقعت فيها الياء عيناً لفُعْلَى اسماً." },
+                    { text: "فَتْوَى", isCorrect: false, rationale: "خطأ، فتوى وقعت لاماً لفعلَى اسماً." },
+                    { text: "مُوقِن", isCorrect: false, rationale: "خطأ." },
+                    { text: "رَضَوَى", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "4. الكلمة التي وقعت فيها الياء مفردة ساكنة بعد ضمة في غير الجمع فَقُلبت واواً هي:",
+                options: [
+                    { text: "مُوقِن", isCorrect: false, rationale: "إجابة ناقصة، لأن (مُوسِر) كذلك." },
+                    { text: "مُوسِر", isCorrect: false, rationale: "إجابة ناقصة، لأن (مُوقِن) كذلك." },
+                    { text: "طُوبَى", isCorrect: false, rationale: "خطأ." },
+                    { text: "(أ) و(ب) معاً", isCorrect: true, rationale: "صحيح، كلمتا موقن وموسر تحقق فيهما شرط وقوع الياء ساكنة مفردة بعد ضمة في غير الجمع." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "5. إذا وقعت الياء لَاماً لـ (فعْلَى) اسما، فإن حكمها الصرفي القياسي هو:",
+                options: [
+                    { text: "تُقْلَب الياءً همزة", isCorrect: false, rationale: "خطأ." },
+                    { text: "تُقْلَب الواو ألفاً", isCorrect: false, rationale: "خطأ." },
+                    { text: "تُقْلَب الياء واواً", isCorrect: true, rationale: "صحيح، تقلب الياء واواً لوقوعها لاماً لـ (فَعْلَى) اسماً مثل فتوى وتقوى." },
+                    { text: "تصح الواو وتستقر", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "6. كلمة (تَقْوَى) جرى فيها إبدال صرفي قياسي هو:",
+                options: [
+                    { text: "إبدال الواو ياءً", isCorrect: false, rationale: "خطأ." },
+                    { text: "إبدال الياء واواً لوقوعها لَاماً لـ (فَعْلَى) اسماً", isCorrect: true, rationale: "صحيح، تقوى مثل فتوى في الحكم الصرفي." },
+                    { text: "إبدال الياء ألفاً", isCorrect: false, rationale: "خطأ." },
+                    { text: "إبدال الواو ألفاً", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "7. الحكم الصرفي للياء إذا وقعت عيناً لـ (فُعْلَى) صِفَةً غير جارية مجري الاسم هو:",
+                options: [
+                    { text: "قلب الياء واواً", isCorrect: false, rationale: "خطأ." },
+                    { text: "تصحيح الياء واستقرارها مثل: ضِيزَى", isCorrect: true, rationale: "صحيح، تصح الياء ولا تقلب واواً لأنها صفة غير جارية مجرى الاسم." },
+                    { text: "قلب الياء ألفاً", isCorrect: false, rationale: "خطأ." },
+                    { text: "قلب الياء همزة", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "8. السبب الصرفي في قلب الياء واواً في كلمة (مُوقِن) هو:",
+                options: [
+                    { text: "وقوع الياء ساكنة مفردة بعد ضمة في غير الجمع", isCorrect: true, rationale: "صحيح، وهو الموضع الثاني من مواضع قلب الياء واواً." },
+                    { text: "وقوع الياء متطرفة بعد ألف زائدة", isCorrect: false, rationale: "خطأ." },
+                    { text: "وقوع الياء عيناً لجمع تكسير", isCorrect: false, rationale: "خطأ." },
+                    { text: "وقوع الياء لَاماً لـ (فُعْلَى) صِفَةً", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "9. الكلمة التي تمثل إبدال الياء واواً لمجيئها لَاماً لـ (فَعْلَى) اسماً من بين الآتي هي:",
+                options: [
+                    { text: "رَضَوَى", isCorrect: false, rationale: "خطأ." },
+                    { text: "حُزْوَى", isCorrect: false, rationale: "خطأ." },
+                    { text: "دُنْيَا", isCorrect: false, rationale: "خطأ." },
+                    { text: "فَتْوَى", isCorrect: true, rationale: "صحيح، فتوى هي المثال القياسي للام فَعْلَى اسماً." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "10. أصل كلمة (طُوبَى) الصرفي قبل الإعلال والإبدال هو:",
+                options: [
+                    { text: "طُيْبَى", isCorrect: true, rationale: "صحيح، أصلها طُيْبَى فوقعت الياء عيناً لفُعْلَى فقلبت واواً." },
+                    { text: "طَوْبَى", isCorrect: false, rationale: "خطأ." },
+                    { text: "طَابَى", isCorrect: false, rationale: "خطأ." },
+                    { text: "طُبْيَى", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "11. الشرط الأساسي لقلب الواو والياء ألفاً في نحو (خَافَ) و(هَابَ) و(صَانَ) هو:",
+                options: [
+                    { text: "أن تحركا وتفتح ما بعدهما", isCorrect: false, rationale: "خطأ." },
+                    { text: "أن تحركا وانفتح ما قبلهما", isCorrect: true, rationale: "صحيح، شرط قلب الواو والياء ألفاً تحركهما وانفتاح ما قبلهما." },
+                    { text: "أن تسكنا وانفتح ما قبلهما", isCorrect: false, rationale: "خطأ." },
+                    { text: "أن تحركا وانضم ما قبلهما", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "12. الأصل الصرفي للفعل (صَانَ) قبل قلب الواو ألفاً هو:",
+                options: [
+                    { text: "صَوَنَ", isCorrect: true, rationale: "صحيح، أصل صان هو صَوَنَ بتحريك الواو وانفتاح ما قبلها." },
+                    { text: "صِوَنَ", isCorrect: false, rationale: "خطأ." },
+                    { text: "صُوِنَ", isCorrect: false, rationale: "خطأ." },
+                    { text: "صَوْنَ", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "13. الأصل الصرفي للفعل (هَابَ) قبل قلب الياء ألفاً هو:",
+                options: [
+                    { text: "هَيَبَ", isCorrect: true, rationale: "صحيح، أصل هاب هو هَيَبَ بتحريك الياء وانفتاح ما قبلها." },
+                    { text: "هِيَبَ", isCorrect: false, rationale: "خطأ." },
+                    { text: "هُيِبَ", isCorrect: false, rationale: "خطأ." },
+                    { text: "هَيْبَ", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "14. التغير الصرفي الذي حدث في الفعلين (خَافَ) و(هَابَ) يُعدّ:",
+                options: [
+                    { text: "إعلالاً بالنقل", isCorrect: false, rationale: "خطأ." },
+                    { text: "إعلالاً بالحذف", isCorrect: false, rationale: "خطأ." },
+                    { text: "إعلالاً بالقلب (إبدال عليل من عليل)", isCorrect: true, rationale: "صحيح، لأنه قلب لحرف العلة إلى ألف." },
+                    { text: "إبدال صحيح من صحيح", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "15. تصح الواو ولا تُقْلَب ألفاً في مصدرَي (التَّعَاوُن) و(التَّحَاوُر) لأن:",
+                options: [
+                    { text: "الواو غير متحركة", isCorrect: false, rationale: "خطأ." },
+                    { text: "غير متطرف", isCorrect: false, rationale: "خطأ." },
+                    { text: "ما قبل الواو غير مفتوح ((ساكن)", isCorrect: true, rationale: "صحيح، لأن الواو سبقها حرف ساكن." },
+                    { text: "الواو جاءت متطرفة", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "16. الفعل (مَال) أصله الصرفي (مَيَلَ)، والحكم الصرفي للياء فيه:",
+                options: [
+                    { text: "وجوب قلب الياء ألفاً لتحركها وانفتاح ما قبلها", isCorrect: true, rationale: "صحيح، تحركت الياء وانفتح ما قبلها فقلبت ألفاً." },
+                    { text: "وجوب قلب الياء واواً", isCorrect: false, rationale: "خطأ." },
+                    { text: "وجوب تصحيح الياء", isCorrect: false, rationale: "خطأ." },
+                    { text: "جواز القلب والتصحيح", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "17. امتنع قلب الواو ألفاً في نحو (القَوَد) و(الخَوَر) و(العَوَر) في وزن (فَعِلَ) لأن:",
+                options: [
+                    { text: "عين الفعل غير متحركة", isCorrect: false, rationale: "خطأ." },
+                    { text: "الفعل دال على عيب أو خَلَق ظاهر بوزن (فَعِلَ) فصَحّت عينه حَمْلاً على صفته المشبهة (أَعْوَر)", isCorrect: true, rationale: "صحيح، الدلالة على العيب أو اللون مع وزن فَعِل تمنع القلب حملاً على أفعل." },
+                    { text: "ما قبل الواو مضموم", isCorrect: false, rationale: "خطأ." },
+                    { text: "ما بعد الواو ساكن", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "18. امتنع قلب الياء ألفاً في (الحَيَدَان) و(السَّيَلَان) لأن:",
+                options: [
+                    { text: "الياء ساكنة", isCorrect: false, rationale: "خطأ." },
+                    { text: "العين تلاها ما آخره زيادة تختص بالأسماء (الألف والنون) الدالة على الحركة والاضطراب", isCorrect: true, rationale: "صحيح، وجود الألف والنون الدالتين على الحركة والاضطراب يمنع الإعلال." },
+                    { text: "الياء مضمومة", isCorrect: false, rationale: "خطأ." },
+                    { text: "ما قبل الياء مكسور", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "19. في الفعل (انْقَادَ)، أصله (انْقَوَدَ)، قُلِبت الواو ألفاً لـ:",
+                options: [
+                    { text: "تحركها بحركة أصلية وانفتاح ما قبلها", isCorrect: true, rationale: "صحيح، تحركت الواو وانفتح ما قبلها فقلبت ألفاً." },
+                    { text: "وقوعها بعد ضمة", isCorrect: false, rationale: "خطأ." },
+                    { text: "وقوعها عيناً لمصدر", isCorrect: false, rationale: "خطأ." },
+                    { text: "تطرفها حقيقة", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "20. تصح الواو والياء ولا تُقْلَبَان ألفاً إذا سَكَنَتا ومثاله الصرفي:",
+                options: [
+                    { text: "القَول والبَيع", isCorrect: true, rationale: "صحيح، لسكون الواو والياء امتنعت قلبهما ألفاً." },
+                    { text: "صَانَ وهَابَ", isCorrect: false, rationale: "خطأ." },
+                    { text: "دَعَا وَرَمَى", isCorrect: false, rationale: "خطأ." },
+                    { text: "انْقَادَ وَاسْتَجَابَ", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "21. الكلمة التي صَحَّت فيها الياء ولم تُقْلَب واواً في (فُعْلَى) صِفَةً هي:",
+                options: [
+                    { text: "ضِيزَى", isCorrect: true, rationale: "صحيح، لأنها صفة غير جارية مجرى الاسم فصحت الياء." },
+                    { text: "دُنْيَا", isCorrect: false, rationale: "خطأ." },
+                    { text: "عُلْيَا", isCorrect: false, rationale: "خطأ." },
+                    { text: "فَتْوَى", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "22. الكلمة التى يجوز فيها قلب الياء ألفاً ويجوز تصحيحها عند ابن مالك هي:",
+                options: [
+                    { text: "ضوقي", isCorrect: false, rationale: "خطأ." },
+                    { text: "طوبي", isCorrect: false, rationale: "خطأ." },
+                    { text: "حيكى", isCorrect: true, rationale: "صحيح، حيكى يجوز فيها القلب والتصحيح عند ابن مالك." },
+                    { text: "ضيزى", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "23. الكلمة التى يجب إعلالها عند الجمهور هي:",
+                options: [
+                    { text: "ضوقي", isCorrect: false, rationale: "خطأ." },
+                    { text: "طوبي", isCorrect: false, rationale: "خطأ." },
+                    { text: "حيكى", isCorrect: false, rationale: "خطأ." },
+                    { text: "ضيزى", isCorrect: true, rationale: "صحيح، تصحيح الياء في ضيزى واجب لأنها صفة غير جارية مجرى الاسم." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "24. كلمة (قَوَى) مخفف (قَوْيَ) امتنع فيها إبدال الواو ياءً عند اجتماع الواو والياء لأن:",
+                options: [
+                    { text: "الحركة غير اصلية", isCorrect: false, rationale: "خطأ." },
+                    { text: "الحركة اصلية", isCorrect: false, rationale: "خطأ." },
+                    { text: "الياء مشددة", isCorrect: false, rationale: "خطأ." },
+                    { text: "الواو ساكنة أصالة / أو لاعتبارات تصريفية", isCorrect: true, rationale: "صحيح، تمنع الإعلال لاعتبارات تصريفية تتعلق بأصل الكلمة." }
+                ]
+            },
+            {
+                type: "mcq",
+                question: "25. امتنع قلب الياء والواو ألفاً في (البَيْع) و(القَوْل) لسبب صرفي هو:",
+                options: [
+                    { text: "سكون الواو والياء وانفتاح ما قبلهما", isCorrect: true, rationale: "صحيح، شرط الإعلال تحركهما، وهنا سكنتا فصحتا." },
+                    { text: "انكسار ما قبلهما", isCorrect: false, rationale: "خطأ." },
+                    { text: "وقوعهما في موضع الفاء", isCorrect: false, rationale: "خطأ." },
+                    { text: "تحرك ما بعدهما", isCorrect: false, rationale: "خطأ." }
+                ]
+            },
+
+            // القسم الثاني: أسئلة أكمل الفراغ (26 إلى 50)
+            {
+                type: "fill",
+                question: "26. أصل كلمة (فَتْوَى) الصرفي هو [...]، والعلة الصرفية لإبدال الياء واواً هي وقوع الياء [...] لـ (فَعْلَى) اسماً.",
+                answers: ["فتيا", "لاما", "لأماً"],
+                rationale: "أصلها (فتيا) فوقعت الياء لاماً لفعلَى اسماً."
+            },
+            {
+                type: "fill",
+                question: "27. أصل كلمة (طُوبَى) الصرفي هو [...]، والسبب الصرفي لقلب الياء واواً وقوعها [...] لوزن (فُعْلَى) اسماً.",
+                answers: ["طيبي", "طُيْبَى", "عينا", "عيناً"],
+                rationale: "أصلها (طُيْبَى) فوقعت الياء عيناً لفُعْلَى اسماً."
+            },
+            {
+                type: "fill",
+                question: "28. تُقْلَب الياء واواً إذا وقعت مفردة ساكنة بعد ضمة في غير الجمع، ومثاله في اسم الفاعل من أَيْقَنَ [...].",
+                answers: ["موقن", "الموقن"],
+                rationale: "موقن اسم فاعل من أيقن."
+            },
+            {
+                type: "fill",
+                question: "29. الكلمة الأصلية لـ (تَقْوَى) قبل الإبدال هي [...]، وقد أُبدلت الياء فيها واواً.",
+                answers: ["تقيا"],
+                rationale: "أصل تقوى هو (تقيا)."
+            },
+            {
+                type: "fill",
+                question: "30. إذا وقعت الياء لَاماً لـ (فَعْلَى) اسماً فإنها تُقْلَب [...]، مثل: [...]",
+                answers: ["واوا", "واواً", "فتوى"],
+                rationale: "تقلب الياء واواً مثل فتوى."
+            },
+            {
+                type: "fill",
+                question: "31. يُشْتَرَط لإبدال الياء واواً في نحو (مُوقِن) أن تكون الياء [...] بعد ضمة في غير [...].",
+                answers: ["ساكنة مفردة", "الجمع"],
+                rationale: "بأن تقع ساكنة مفردة بعد ضمة في غير الجمع."
+            },
+            {
+                type: "fill",
+                question: "32. كلمة (رَضَوَى) اسم جبل، وأصلها الصرفي [...]، والحكم الصرفي فيها إبدال الياء واواً لوقوعها [...] لـ (فَعْلَى) اسماً.",
+                answers: ["رضيا", "لاما", "لاماً"],
+                rationale: "أصلها (رضيا) فوقعت الياء لاماً لفعلَى اسماً."
+            },
+            {
+                type: "fill",
+                question: "33. إذا وقعت الياء لَاماً لـ (فَعْلَى) اسما وجب [...] الياء واواً، مثل: [...],",
+                answers: ["قلب", "فتوى"],
+                rationale: "يجب قلب الياء واواً مثل فتوى."
+            },
+            {
+                type: "fill",
+                question: "34. أصل كلمة (مُوسِر) الصرفي هو [...]، والسبب الصرفي للتغيير وقوع الياء ساكنة مفردة بعد [...].",
+                answers: ["مُيْسِر", "ميسر", "ضمة"],
+                rationale: "أصلها موسر (مُيْسِر) ووقع بعد ضمة."
+            },
+            {
+                type: "fill",
+                question: "35. تُقْلَب الياء واواً في أربعة مواضع قياسية، منها إذا وقعت عيناً لـ [...] اسماً، مثل [...].",
+                answers: ["فعلى", "فُعْلَى", "طوبى", "دنيا"],
+                rationale: "مثل فُعْلَى اسماً كطوبى ودنيا."
+            },
+            {
+                type: "fill",
+                question: "36. يُشْتَرَط لقلب الواو والياء ألفاً أن تحركا بحركة [...] وأن يكون ما قبلهما [...].",
+                answers: ["أصلية", "مفتوحا", "مفتوحاً"],
+                rationale: "أن تحركا بحركة أصلية وانفتاح ما قبلهما."
+            },
+            {
+                type: "fill",
+                question: "37. الأصل الصرفي للفعل (صَانَ) هو [...]، والأصل الصرفي للفعل (هَابَ) هو [...].",
+                answers: ["صَوَنَ", "هَيَبَ"],
+                rationale: "أصل صان صَوَنَ وأصل هاب هَيَبَ."
+            },
+            {
+                type: "fill",
+                question: "38. لا تبدل الواو والياء نحو (القَوْل) و(البَيْع) لانهما [...] ويشترط [...]",
+                answers: ["ساكنتان", "تحركهما"],
+                rationale: "لأنهما ساكنتان ويشترط تحركهما."
+            },
+            {
+                type: "fill",
+                question: "39. امتنع قلب الواو ألفاً في نحو (التَّجَاوُر) و(التَّعَاوُن) لأن [...]",
+                answers: ["ما قبل الواو ساكن", "الواو مسبوقة بساكن"],
+                rationale: "لأن ما قبل الواو غير مفتوح بل ساكن."
+            },
+            {
+                type: "fill",
+                question: "40. امتنع قلب الواو والياء ألفاً في نحو (العَوَر) و(الصَّيَد) لأنه مصدر من فعل بوزن [...] والوصف على وزن [...].",
+                answers: ["فَعِلَ", "أفعل", "أَعْوَر"],
+                rationale: "لأنه دال على عيب أو خلق على وزن فَعِل والوصف أفعل."
+            },
+            {
+                type: "fill",
+                question: "41. إذا وقعت الواو أو الياء عيناً لما آخره زيادة تختص بالأسماء كـ (الألف والنون) في نحو (الحَيَدَان) فإنهما [...] والسبب عدم تحرك ما [...].",
+                answers: ["تصحان", "لا تعلان", "ما بعدهما", "ما قبلهما"],
+                rationale: "لعدم استيفاء الشروط وتصحيحهما."
+            },
+            {
+                type: "fill",
+                question: "42. الأصل الصرفي للفعل (اسْتَجَابَ) قبل الإعلال هو [...], ونوع التغير الصرفي هو إعلال بـ [...].",
+                answers: ["استجوب", "اسْتَجْوَبَ", "القلب"],
+                rationale: "أصله استجوب وإعلال بالقلب."
+            },
+            {
+                type: "fill",
+                question: "43. إذا التقى ساكنان بعد قلب الواو أو الياء ألفاً في نحو (صُنْتُ) و(هِبْتُ) فإن الألف [...] للتخلص من [...].",
+                answers: ["تحذف", "حذفت", "التقاء الساكنين"],
+                rationale: "حذفت الألف للتخلص من التقاء الساكنين."
+            },
+            {
+                type: "fill",
+                question: "44. صَحَّت الواو والياء ولم تُقْلَبَا ألفاً في (الخَوَر) و(الهَيَف) لأن الوصف منهما على وزن [...] وهو دال على [...].",
+                answers: ["أفعل", "عيب", "خلق"],
+                rationale: "دال على عيب أو لون وصفه على أفعل."
+            },
+            {
+                type: "fill",
+                question: "45. يُشْتَرَط في الحركة المفتوحة قبل الواو والياء لقلبهما ألفاً أن تكون حركة [...] لا عارضة.",
+                answers: ["أصلية"],
+                rationale: "أن تكون أصلية لازمة."
+            },
+            {
+                type: "fill",
+                question: "46. قال تعالى: {وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ}؛ أصل الفعل (قَالَ) هو [...] وحكم الواو فيه وجوب القلب [...].",
+                answers: ["قول", "قَوَلَ", "ألفاً", "القلب ألفا"],
+                rationale: "أصله قَوَلَ وحكمها القلب ألفاً."
+            },
+            {
+                type: "fill",
+                question: "47. الشاهد الصرفي في قوله تعالى: {هذه مشية حيكى } كلمة (حيكى ) حيث صحت لانها [...]",
+                answers: ["صفة غير جارية مجرى الاسم", "صفة"],
+                rationale: "لأنها صفة غير جارية مجرى الاسم."
+            },
+            {
+                type: "fill",
+                question: "48. أصل كلمة (انْقَادَ) قبل الإعلال بقلب الواو ألفاً هو [...], والعلة الصرفية هي تحرك الواو وانفتاح ما [...].",
+                answers: ["انقود", "انْقَوَدَ", "قبلها"],
+                rationale: "أصله انقود وانفتح ما قبلها."
+            },
+            {
+                type: "fill",
+                question: "49. كلمة (مَال) أصلها الصرفي [...] بدليل مصدرها (المَيْل)، والتغير الصرفي الجاري فيها هو إعلال بـ [...].",
+                answers: ["مَيِلَ", "ميل", "القلب"],
+                rationale: "أصلها مَيِلَ وإعلال بالقلب."
+            },
+            {
+                type: "fill",
+                question: "50. صَحَّت الياء في (ضِيزَى) في قوله تعالى: {تِلْكَ إِذًا قِسْمَةٌ ضِيزَى} لأن الياء وقعت عيناً لـ [...] صِفَةً.",
+                answers: ["فعلى", "فُعْلَى"],
+                rationale: "لأنها وقعت عيناً لـ (فُعْلَى) صفة غير جارية مجرى الاسم."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const questionCounter = document.getElementById('question-counter');
+        const scoreTracker = document.getElementById('score-tracker');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const fillContainer = document.getElementById('fill-container');
+        const fillInput = document.getElementById('fill-input');
+        const feedbackBox = document.getElementById('feedback-box');
+        const nextBtn = document.getElementById('next-btn');
+        const finalScoreText = document.getElementById('final-score-text');
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            startScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            feedbackBox.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            fillInput.value = '';
+            
+            const currentQ = quizData[currentQuestionIndex];
+            questionCounter.innerText = `السؤال ${currentQuestionIndex + 1} من ${quizData.length}`;
+            scoreTracker.innerText = `الدرجة: ${score}`;
+            questionText.innerText = currentQ.question;
+
+            if (currentQ.type === "mcq") {
+                optionsContainer.classList.remove('hidden');
+                fillContainer.classList.add('hidden');
+
+                optionsContainer.innerHTML = '';
+                currentQ.options.forEach((option, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = "w-full text-right p-4 rounded-xl border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50 transition font-medium text-slate-700 flex justify-between items-center";
+                    btn.innerHTML = `<span>${option.text}</span>`;
+                    btn.onclick = () => selectOption(index, btn);
+                    optionsContainer.appendChild(btn);
+                });
+            } else if (currentQ.type === "fill") {
+                optionsContainer.classList.add('hidden');
+                fillContainer.classList.remove('hidden');
+            }
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            if (answered) return;
+            answered = true;
+
+            const currentQ = quizData[currentQuestionIndex];
+            const allBtns = optionsContainer.children;
+
+            for (let i = 0; i < allBtns.length; i++) {
+                allBtns[i].disabled = true;
+                if (currentQ.options[i].isCorrect) {
+                    allBtns[i].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800');
+                } else if (i === selectedIndex) {
+                    allBtns[i].classList.add('bg-rose-100', 'border-rose-500', 'text-rose-800');
+                }
+            }
+
+            if (currentQ.options[selectedIndex].isCorrect) {
+                score++;
+                scoreTracker.innerText = `الدرجة: ${score}`;
+                feedbackBox.className = "mb-6 p-4 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-800 text-sm";
+                feedbackBox.innerHTML = `<strong>إجابة صحيحة!</strong> ${currentQ.options[selectedIndex].rationale}`;
+            } else {
+                feedbackBox.className = "mb-6 p-4 rounded-xl border bg-rose-50 border-rose-200 text-rose-800 text-sm";
+                feedbackBox.innerHTML = `<strong>إجابة خاطئة.</strong> ${currentQ.options[selectedIndex].rationale}`;
+            }
+
+            feedbackBox.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function submitFillAnswer() {
+            if (answered) return;
+            const userVal = fillInput.value.trim().toLowerCase();
+            if (!userVal) {
+                alert("الرجاء إدخال إجابة أولاً.");
+                return;
+            }
+            answered = true;
+
+            const currentQ = quizData[currentQuestionIndex];
+            // التحقق إذا كانت الإجابة مطابقة لأحد الاحتمالات الصحيحة
+            const isCorrect = currentQ.answers.some(ans => ans.toLowerCase() === userVal);
+
+            if (isCorrect) {
+                score++;
+                scoreTracker.innerText = `الدرجة: ${score}`;
+                feedbackBox.className = "mb-6 p-4 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-800 text-sm";
+                feedbackBox.innerHTML = `<strong>إجابة صحيحة!</strong> ${currentQ.rationale}`;
+            } else {
+                feedbackBox.className = "mb-6 p-4 rounded-xl border bg-rose-50 border-rose-200 text-rose-800 text-sm";
+                feedbackBox.innerHTML = `<strong>إجابة خاطئة.</strong> الإجابة الصحيحة المقبولة هي إحدى الآتي: (${currentQ.answers.join(" أو ")}). ${currentQ.rationale}`;
+            }
+
+            feedbackBox.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            finalScoreText.innerText = `درجتك النهائية هي: ${score} من ${quizData.length}`;
+        }
+
+        function restartQuiz() {
+            startQuiz();
+        }
+    </script>
+</body>
+</html>
